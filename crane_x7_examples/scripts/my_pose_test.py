@@ -49,36 +49,11 @@ def main():
     print("Group names:")
     print(robot.get_group_names())
     
-    arm.set_named_target("home")
-    arm.go()
-    rospy.sleep(1)
-
-    print("Current state:")
-    print(robot.get_current_state().joint_state)
-    
-    # アーム初期ポーズを表示
-    arm_initial_pose = arm.get_current_pose().pose
-    print("Arm initial pose:")
-    print(arm_initial_pose)
-
-    # 何かを掴んでいた時のためにハンドを開く
-    gripper.set_joint_value_target([0.9, 0.9])
-    gripper.go()
-    
-
-    '''
-    print("testb")
-    arm.set_named_target("testd")
-    arm.go()
-    '''
-
     # ハンドを閉じる
     gripper.set_joint_value_target([0.01,0.01])
     gripper.go()
 
     # 手動で姿勢を指定するには以下のように指定
-   
-    
     target_pose = geometry_msgs.msg.Pose()
     target_pose.position.x = 0.25
     target_pose.position.y = -0.03
@@ -116,15 +91,15 @@ def main():
         finger_marker.action = Marker.ADD
         finger_marker.header.stamp = rospy.Time.now() 
 
-        print("x:", pos_vec[0][0])
-        print("y:", pos_vec[1][0])
-        print("z:", pos_vec[2][0])
+        #print("x:", pos_vec[0][0])
+        #print("y:", pos_vec[1][0])
+        #print("z:", pos_vec[2][0])
         #finger_marker.pose.position.x = target_pose.position.x
         #finger_marker.pose.position.y = target_pose.position.y
         #finger_marker.pose.position.z = target_pose.position.z - 0.06 - 0.024
 
-        print("arm current pose:")
-        print(arm.get_current_pose().pose.position)
+        #print("arm current pose:")
+        #print(arm.get_current_pose().pose.position)
 
         finger_marker.pose.position.x = finger_pose[0][0]
         finger_marker.pose.position.y = finger_pose[1][0]
