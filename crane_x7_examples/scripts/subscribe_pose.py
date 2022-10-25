@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import time
 import rospy
 import moveit_commander
@@ -53,41 +52,6 @@ def pub_only():
     #print "pub_only   published ",
     #print mode 
 
-#def print_pose( x, y, z, e1, e2, e3 ):
-    #print ' Position'
-    #print '  x',
-    #print x
-    #print '  y',
-    #print y
-    #print '  z',
-    #print z
-    #print ' Euler'
-    #print '  e[0]]',
-    #print e1
-    #print '  e[1]',
-    #print e2
-    #print '  e[2]',
-    #print e3
-    #print ' ----'
-
-# def error_position_check( p ):
-#     gosa = abs( p[0] - p[1] )
-#     if ( gosa < 0.05):
-#         r = 1
-#     else:
-#         r = 0
-#     return r
-
-# def error_orientation_check( e ):
-#     gosa = abs( e[0] - e[1] )
-#     if ( gosa < 0.5):
-#         r = 1
-#     else:
-#         r = 0
-#     return r
-
-
-
 def error_position_check( p ):
     gosa = abs( p[0] - p[1] )
     if ( gosa < 0.05):
@@ -111,23 +75,6 @@ def error_orientation_check( e ):
     else:
         r = 0
     return r
-
-#def print_flag( a, b, c, d, e, f):
-    #print " Flag"
-    #print "  x_flag",
-    #print a
-    #print "  y_flag",
-    #print b
-    #print "  z_flag",
-    #print c
-    #print "  ex_flag",
-    #print d
-    #print "  ey_flag",
-    #print e
-    #print "  ez_flag",
-    #print f  
-
-
 
 def getMerginPosition(origin_position, origin_quo, mergin):
 
@@ -232,16 +179,7 @@ def callback2(msg):
         flag_m = 1
         mode = 1
 
-    #####################################################################################################
-    #####################################################################################################
-    #####################################################################################################
-    #####################################################################################################
-
-
-
 def callback(msg):
-
-
     global robot
     global arm
     global gripper
