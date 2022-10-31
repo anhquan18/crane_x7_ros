@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import time
 import rospy
 import moveit_commander
 import geometry_msgs.msg
@@ -12,6 +11,7 @@ from std_msgs.msg import Bool
 import sys
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 import math
+import time
 from std_msgs.msg import Float32MultiArray
 import numpy as np
 
@@ -77,7 +77,6 @@ def error_orientation_check( e ):
     return r
 
 def getMerginPosition(origin_position, origin_quo, mergin):
-
     euler = euler_from_quaternion(origin_quo)
     mergin_np = np.array(mergin)
 
@@ -146,8 +145,6 @@ def callback2(msg):
         gripper.set_joint_value_target([0.9, 0.9])
         gripper.go()
 
-
-        #print "step0"
         target_pose = geometry_msgs.msg.Pose()
         target_pose.position.x = msg.position.x
         target_pose.position.y = msg.position.y
@@ -212,15 +209,11 @@ def callback(msg):
         pub_bool.data = False
         pub.publish(pub_bool)
 
-        #print " mode",
-        #print mode
-
         # グリッパーを閉じる
         gripper.set_joint_value_target([0.05, 0.05])
         gripper.go()
 
         # 近づく 
-        #print "step1"
         mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.1])
         target_pose = geometry_msgs.msg.Pose()
         target_pose.position.x = mergin_position.x 
@@ -238,8 +231,7 @@ def callback(msg):
         gripper.go()
 
         # 把持位置に移動
-        #print "step2"
-        target_pose = geometry_msgs.msg.Pose()    ######################################################################
+        target_pose = geometry_msgs.msg.Pose()
         mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.055])
         target_pose.position.x = mergin_position.x 
         target_pose.position.y = mergin_position.y
@@ -256,7 +248,6 @@ def callback(msg):
         gripper.go()
 
         # 持ち上げる 
-        #print "step3"
         target_pose = geometry_msgs.msg.Pose()
         mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.15])
         target_pose.position.x = mergin_position.x 
@@ -276,7 +267,6 @@ def callback(msg):
         print ("{0}".format(elapsed_time))
 
         # もう一回置く
-        #print "step4"
         target_pose = geometry_msgs.msg.Pose()
         mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.055])
         target_pose.position.x = mergin_position.x 
@@ -307,13 +297,6 @@ def callback(msg):
         arm.go()
 
         global computing_flag
-        #print "call back 1 start"
-        #print start
-
-        #print "call back 1 end"
-        #print end
-
-
         rospy.sleep(3)
 
         pub_bool = Bool()

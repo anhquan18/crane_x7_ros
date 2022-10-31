@@ -5,6 +5,7 @@ import moveit_commander
 import geometry_msgs.msg
 import rosnode
 import numpy as np
+import time
 from sensor_msgs.msg import PointCloud
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 from visualization_msgs.msg import Marker
