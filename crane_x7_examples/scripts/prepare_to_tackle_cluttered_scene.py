@@ -26,25 +26,25 @@ class HandController():
                                             [0.0],
                                             [0.0]])
 
-    def transform_array_to_vector(self, pos):
+    def transform_3Darray_to_3Dvector(self, pos):
         pos_vec = np.array([[pos[0]], 
                             [pos[1]], 
                             [pos[2]]])
         return pos_vec
 
-    def rotate_3Dmatrix_x_axis(self, position_vec, theta):
+    def rotate_euler_angle_x_axis(self, position_vec, theta):
         rotation_matrix = np.array([[1, 0, 0],
                                     [0, np.cos(theta), -np.sin(theta)],
                                     [0, np.sin(theta), np.cos(theta)]])
         return np.dot(rotation_matrix, position_vec)
 
-    def rotate_3Dmatrix_y_axis(self, position_vec, theta):
+    def rotate_euler_angle_y_axis(self, position_vec, theta):
         rotation_matrix = np.array([[np.cos(theta), 0, np.sin(theta)],
                                     [0, 1, 0],
                                     [-np.sin(theta), 0, np.cos(theta)]])
         return np.dot(rotation_matrix, position_vec)
 
-    def rotate_3Dmatrix_z_axis(self, position_vec, theta):
+    def rotate_euler_angle_z_axis(self, position_vec, theta):
         rotation_matrix = np.array([[np.cos(theta), -np.sin(theta), 0],
                                     [np.sin(theta), np.cos(theta), 0],
                                     [0, 0, 1]])
@@ -52,7 +52,7 @@ class HandController():
 
     def get_current_hand_pose_as_vector(self):
         pos = self.arm.get_current_pose().pose.position
-        return self.transform_array_to_vector([pos.x, pos.y, pos.z])
+        return self.transform_3Darray_to_3Dvector([pos.x, pos.y, pos.z])
 
     def get_current_hand_orientation_euler(self):
         q = self.arm.get_current_pose().pose.orientation
@@ -63,9 +63,9 @@ class HandController():
         hand_ori = self.get_current_hand_orientation_euler()
         # 指先をハンドと同じ姿勢に回転移動させる
         # XYZ軸を順番的に回転する
-        finger_pose = self.rotate_3Dmatrix_x_axis(self.finger_size_vector, hand_ori[0])
-        finger_pose = self.rotate_3Dmatrix_y_axis(finger_pose, hand_ori[1])
-        finger_pose = self.rotate_3Dmatrix_z_axis(finger_pose, hand_ori[2])
+        finger_pose = self.rotate_euler_angle_x_axis(self.finger_size_vector, hand_ori[0])
+        finger_pose = self.rotate_euler_angle_y_axis(finger_pose, hand_ori[1])
+        finger_pose = self.rotate_euler_angle_z_axis(finger_pose, hand_ori[2])
 
         # ハンドと同じ姿勢になったハンドを平行移動させる
         finger_pose += hand_current_pos_vec
@@ -151,7 +151,6 @@ def main():
     print("Arm goal pose:")
     print(arm_goal_pose)
     print("done")
-
 
     while not rospy.is_shutdown():
         hand_controller.update_finger_pose()
