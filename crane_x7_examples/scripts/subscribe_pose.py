@@ -45,12 +45,14 @@ gripper = moveit_commander.MoveGroupCommander("gripper")
 start = 0 #時間計測用変数
 computing_flag = False
 
+
 def pub_only():
     pub_bool = Bool()
     pub_bool.data = mode
     pub2.publish(pub_bool)   
     #print "pub_only   published ",
     #print mode 
+
 
 def error_position_check( p ):
     gosa = abs( p[0] - p[1] )
@@ -64,6 +66,7 @@ def error_position_check( p ):
         r = 0
     return r
 
+
 def error_orientation_check( e ):
     gosa = abs( math.fabs(e[0]) - math.fabs(e[1]) )
     if ( gosa < 0.5):
@@ -75,6 +78,7 @@ def error_orientation_check( e ):
     else:
         r = 0
     return r
+
 
 def getMerginPosition(origin_position, origin_quo, mergin):
     euler = euler_from_quaternion(origin_quo)
@@ -108,8 +112,8 @@ def getMerginPosition(origin_position, origin_quo, mergin):
 
     return result_position
 
+
 def callback2(msg):
-    
     global computing_flag
     if computing_flag == False:
         computing_flag = True
@@ -315,13 +319,11 @@ def callback(msg):
         #print(" Published bool True")
         #print(" done")
         #print "==============================================="
-
-
         start = 0
 
 def main():
     rospy.init_node("crane_x7_pick_and_place_controller")
-    sub = rospy.Subscriber( '/pick_pose', Pose, callback )
+    sub = rospy.Subscriber('/pick_pose', Pose, callback)
     sub2 = rospy.Subscriber('/camera_pose', Pose, callback2)
     pub_only()
     rospy.spin()    

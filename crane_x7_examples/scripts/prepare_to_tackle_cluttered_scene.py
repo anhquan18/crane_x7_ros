@@ -18,7 +18,7 @@ class HandController():
         self.arm = moveit_commander.MoveGroupCommander("arm")
         self.arm.set_max_velocity_scaling_factor(0.7)
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
-        self.finger_pub = rospy.Publisher("finger_pub", Marker, queue_size=5)
+        self.finger_pub = rospy.Publisher("crane_x7_finger_marker", Marker, queue_size=5)
         self.finger_size_vector = np.array([[0.0],
                                             [0.0], 
                                             [0.06 + 0.024]])
