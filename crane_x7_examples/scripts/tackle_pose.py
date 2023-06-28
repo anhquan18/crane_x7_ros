@@ -2,7 +2,6 @@
 import rospy
 import moveit_commander
 from geometry_msgs.msg import Pose, Point
-from std_msgs.msg import Bool
 import sys
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 import math
@@ -11,7 +10,7 @@ import numpy as np
 
 robot = moveit_commander.RobotCommander()
 arm = moveit_commander.MoveGroupCommander("arm")
-arm.set_max_velocity_scaling_factor(0.3)
+arm.set_max_velocity_scaling_factor(0.2)
 gripper = moveit_commander.MoveGroupCommander("gripper")
 
 
@@ -54,13 +53,11 @@ def tackle_callback(msg):
     global gripper
   
     # 位置姿勢の代入
+    print(msg)
     x = msg.position.x
     y = msg.position.y
     z = msg.position.z
     q = quaternion_from_euler( 3.14, 0.0, 3.14 )
-
-    pub_bool = Bool()
-    pub_bool.data = False
 
     # グリッパーを閉じる
     gripper.set_joint_value_target([0.05, 0.05])
@@ -68,7 +65,7 @@ def tackle_callback(msg):
 
     # 近づく 
     mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.1])
-    target_pose = geometry_msgs.msg.Pose()
+    target_pose = Pose()
     target_pose.position.x = mergin_position.x 
     target_pose.position.y = mergin_position.y
     target_pose.position.z = mergin_position.z
@@ -80,8 +77,8 @@ def tackle_callback(msg):
     arm.go()
 
     # 把持位置に移動
-    target_pose = geometry_msgs.msg.Pose()
-    mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.055])
+    target_pose = Pose()
+    mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.001])
     target_pose.position.x = mergin_position.x 
     target_pose.position.y = mergin_position.y
     target_pose.position.z = mergin_position.z
@@ -96,12 +93,8 @@ def tackle_callback(msg):
     gripper.set_joint_value_target([0.9, 0.9])
     gripper.go()
 
-    # グリッパーを閉じる
-    gripper.set_joint_value_target([0.05, 0.05])
-    gripper.go()
-
     # もとに戻る
-    target_pose = geometry_msgs.msg.Pose()
+    target_pose = Pose()
     target_pose.position.x = 0.26
     target_pose.position.y = 0.0
     target_pose.position.z = 0.336
@@ -113,6 +106,10 @@ def tackle_callback(msg):
     arm.set_pose_target( target_pose )	# 目標ポーズ設定
     arm.go()
 
+    # グリッパーを閉じる
+    gripper.set_joint_value_target([0.05, 0.05])
+    gripper.go()
+
     rospy.sleep(3)
     #print(" done")
     #print "==============================================="
@@ -121,8 +118,7 @@ def tackle_callback(msg):
 def main():
     rospy.init_node("crane_x7_pick_and_place_controller")
     tackle_sub = rospy.Subscriber('/tackle_pose', Pose, tackle_callback)
-    sub2 = rospy.Subscriber('/camera_pose', Pose, callback2)
-    pub_only()
+    print("spin")
     rospy.spin()    
     
 if __name__ == '__main__':
