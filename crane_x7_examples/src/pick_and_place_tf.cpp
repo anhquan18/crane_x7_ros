@@ -22,6 +22,7 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+#include <random>
 
 #include "angles/angles.h"
 #include "geometry_msgs/msg/pose.hpp"
@@ -164,37 +165,75 @@ private:
     const double GRIPPER_DEFAULT = 0.0;
     const double GRIPPER_OPEN = angles::from_degrees(60.0);
     const double GRIPPER_CLOSE = angles::from_degrees(15.0);
+    static int place_flag = 0;
 
     // 何かを掴んでいた時のためにハンドを開閉
     control_gripper(GRIPPER_OPEN);
     control_gripper(GRIPPER_DEFAULT);
 
     // 掴む準備をする
-    control_arm(target_position.x(), target_position.y(), target_position.z() + 0.12, -180, 0, 90);
+    control_arm(target_position.x()+0.005, target_position.y(), target_position.z() + 0.12, -180, 0, 90);
 
     // ハンドを開く
     control_gripper(GRIPPER_OPEN);
 
     // 掴みに行く
-    control_arm(target_position.x(), target_position.y(), target_position.z() + 0.07, -180, 0, 90);
+    control_arm(target_position.x()+0.005, target_position.y(), target_position.z() + 0.07, -180, 0, 90);
 
     // ハンドを閉じる
     control_gripper(GRIPPER_CLOSE);
 
     // 持ち上げる
-    control_arm(target_position.x(), target_position.y(), target_position.z() + 0.12, -180, 0, 90);
+    control_arm(target_position.x()+0.005, target_position.y(), target_position.z() + 0.12, -180, 0, 90);
+
+    if (place_flag == 0) {
+    	    // 移動する
+	    control_arm(0.31, 0.1, 0.2, -180, 0, 90);
+
+	    // 下ろす
+	    control_arm(0.31, 0.1, 0.12, -180, 0, 90);
+
+	    // ハンドを開く
+	    control_gripper(GRIPPER_OPEN);
+
+	    // 少しだけハンドを持ち上げる
+	    control_arm(0.31, 0.1, 0.2, -180, 0, 90);
+            place_flag = 1;
+    }
+    else {
+    	    // 移動する
+	    control_arm(0.31, -0.1, 0.2, -180, 0, 90);
+
+	    // 下ろす
+	    control_arm(0.31, -0.1, 0.12, -180, 0, 90);
+
+	    // ハンドを開く
+	    control_gripper(GRIPPER_OPEN);
+
+	    // 少しだけハンドを持ち上げる
+	    control_arm(0.31, -0.1, 0.2, -180, 0, 90);
+            place_flag = 0;
+    } 
+
+    /*
+    std::random_device rd;
+    std::uniform_real_distribution<float> dist(-0.125, 0.125);
+    std::mt19937 engine(rd());
+
+    float random = dist(engine);
 
     // 移動する
-    control_arm(0.1, 0.2, 0.2, -180, 0, 90);
+    control_arm(0.31, random, 0.2, -180, 0, 90);
 
     // 下ろす
-    control_arm(0.1, 0.2, 0.13, -180, 0, 90);
+    control_arm(0.31, random, 0.13, -180, 0, 90);
 
     // ハンドを開く
     control_gripper(GRIPPER_OPEN);
 
     // 少しだけハンドを持ち上げる
-    control_arm(0.1, 0.2, 0.2, -180, 0, 90);
+    control_arm(0.31, random, 0.2, -180, 0, 90);
+    */
 
     // 初期姿勢に戻る
     // control_arm(0.15, 0.0, 0.3, -180, 0, 90);
