@@ -35,6 +35,7 @@ set(executable_list
   joint_values
   pick_and_place
   pick_and_place_tf
+  pick_and_place_tf_with_kachaka
   aruco_detection
   color_detection
   point_cloud_detection
