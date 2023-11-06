@@ -44,6 +44,9 @@ int current_picking_id = 0; // target_0とtarget_1
 int table_box_id = 1; // target_0とtarget_1
 std::string current_direction = "kachaka"; // kachaka向きとtable向き
 double placing_flag = 0.08;
+tf2::Vector3 kachaka_pick_position;
+rclcpp::Node::SharedPtr node = nullptr;
+
 
 class PickAndPlaceTf : public rclcpp::Node
 {
@@ -199,7 +202,7 @@ private:
     control_gripper(GRIPPER_DEFAULT);
 
     // 掴む準備をする
-    control_arm(target_position.x(), target_position.y(), target_position.z() + 0.12, -180, 0, 90);
+    control_arm(target_position.x(), target_position.y(), target_position.z() + 0.25, -180, 0, 90);
 
     // ハンドを開く
     control_gripper(GRIPPER_OPEN);
@@ -215,7 +218,8 @@ private:
 
     // kachakaの上にある箱をtableまで移動させる
     if (current_direction == "kachaka") {
-            // 移動する
+      kachaka_pick_position = target_position;
+      // 移動する
 	    control_arm(0.25 + placing_flag, 0.0, 0.2, -180, 0, 90);
 
 	    // 下ろす
@@ -241,20 +245,23 @@ private:
 		    placing_flag = 0.0;
     } else { // tableの上にある箱をkachakaまで移動させる
             // 移動する
-	    control_arm(0.0, -0.3, 0.2, -180, 0, 90);
-
+	    //control_arm(0.0, -0.45, 0.2, -180, 0, 90);
+      control_arm(kachaka_pick_position.x(), kachaka_pick_position.y(), kachaka_pick_position.z() + 0.25, -180, 0, 90);
 	    // 下ろす
-	    control_arm(0.0, -0.3, 0.13, -180, 0, 90);
-
+	    //control_arm(0.0, -0.45, 0.13, -180, 0, 90);
+      control_arm(kachaka_pick_position.x(), kachaka_pick_position.y(), kachaka_pick_position.z() + 0.07, -180, 0, 90);
 	    // ハンドを開く
 	    control_gripper(GRIPPER_OPEN);
 
 	    // 少しだけハンドを持ち上げる
-	    control_arm(0.0, -0.3, 0.2, -180, 0, 90);
+	    //control_arm(0.0, -0.45, 0.2, -180, 0, 90);
+      control_arm(kachaka_pick_position.x(), kachaka_pick_position.y(), kachaka_pick_position.z() + 0.25, -180, 0, 90);
+
 
 	    // カメラをkachakaの方に向かせる
 	    kachaka_direction_init_pose();
 	    current_direction = "kachaka";
+      rclcpp::sleep_for(5000ms);
     }
 
 
