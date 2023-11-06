@@ -261,7 +261,7 @@ private:
 	    // カメラをkachakaの方に向かせる
 	    kachaka_direction_init_pose();
 	    current_direction = "kachaka";
-      rclcpp::sleep_for(11000ms);
+      rclcpp::sleep_for(15000ms);
     }
 
 
