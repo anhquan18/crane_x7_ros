@@ -240,7 +240,7 @@ private:
 
 	    // tableの置く位置が干渉しないように位置を少しずらす
 	    if (placing_flag == 0.0) 
-		    placing_flag = 0.08;
+		    placing_flag = 0.1;
 	    else
 		    placing_flag = 0.0;
     } else { // tableの上にある箱をkachakaまで移動させる
