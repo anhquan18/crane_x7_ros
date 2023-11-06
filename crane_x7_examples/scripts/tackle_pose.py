@@ -78,7 +78,7 @@ def tackle_callback(msg):
 
     # 把持位置に移動
     target_pose = Pose()
-    mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.001])
+    mergin_position = getMerginPosition(msg.position, q, [0, 0, -0.005])
     target_pose.position.x = mergin_position.x 
     target_pose.position.y = mergin_position.y
     target_pose.position.z = mergin_position.z
@@ -90,8 +90,8 @@ def tackle_callback(msg):
     arm.go()
 
     # グリッパーを開く
-    gripper.set_joint_value_target([0.9, 0.9])
-    gripper.go()
+    #gripper.set_joint_value_target([0.9, 0.9])
+    #gripper.go()
 
     # もとに戻る
     target_pose = Pose()
@@ -107,8 +107,8 @@ def tackle_callback(msg):
     arm.go()
 
     # グリッパーを閉じる
-    gripper.set_joint_value_target([0.05, 0.05])
-    gripper.go()
+    #gripper.set_joint_value_target([0.05, 0.05])
+    #gripper.go()
 
     rospy.sleep(3)
     #print(" done")
