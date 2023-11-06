@@ -41,7 +41,7 @@
 using namespace std::chrono_literals;
 using MoveGroupInterface = moveit::planning_interface::MoveGroupInterface;
 int current_picking_id = 0; // target_0とtarget_1
-int table_box_id = 1; // target_0とtarget_1
+int table_box_id = 10000; // かぶらないIDで自分のテーブル上にあるIDを初期化
 std::string current_direction = "kachaka"; // kachaka向きとtable向き
 double placing_flag = 0.08;
 tf2::Vector3 kachaka_pick_position;
@@ -261,7 +261,7 @@ private:
 	    // カメラをkachakaの方に向かせる
 	    kachaka_direction_init_pose();
 	    current_direction = "kachaka";
-      rclcpp::sleep_for(5000ms);
+      rclcpp::sleep_for(11000ms);
     }
 
 
