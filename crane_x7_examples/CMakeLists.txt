@@ -31,11 +31,14 @@ find_package(tf2_geometry_msgs REQUIRED)
 set(executable_list
   gripper_control
   cartesian_path
+  pilz_cartesian_path
   pose_groupstate
   joint_values
   pick_and_place
   pick_and_place_tf
+  team_pick_and_place_tf
   pick_and_place_tf_with_kachaka
+  team_pick_and_place_cartesian_path
   aruco_detection
   color_detection
   point_cloud_detection

@@ -18,8 +18,8 @@ from ament_index_python.packages import get_package_share_directory
 from crane_x7_description.robot_description_loader import RobotDescriptionLoader
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch_ros.actions import SetParameter
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import SetParameter
 from launch_ros.actions import Node
 import yaml
 
@@ -57,10 +57,9 @@ def generate_launch_description():
     kinematics_yaml = load_yaml('crane_x7_moveit_config', 'config/kinematics.yaml')
 
     declare_example_name = DeclareLaunchArgument(
-        'example', default_value='pose_groupstate',
+        'example', default_value='color_detection',
         description=('Set an example executable name: '
-                     '[gripper_control, pose_groupstate, joint_values,'
-                     'pick_and_place, cartesian_path, pilz_cartesian_path , team_pick_and_place_cartesian_path]')
+                     '[color_detection, aruco_detection, point_cloud_detection]')
     )
 
     declare_use_sim_time = DeclareLaunchArgument(
@@ -68,17 +67,23 @@ def generate_launch_description():
         description=('Set true when using the gazebo simulator.')
     )
 
-    example_node = Node(name=[LaunchConfiguration('example'), '_node'],
+    picking_node = Node(name="team_pick_and_place_tf",
                         package='crane_x7_examples',
-                        executable=LaunchConfiguration('example'),
+                        executable='team_pick_and_place_tf',
                         output='screen',
                         parameters=[{'robot_description': description_loader.load()},
                                     robot_description_semantic,
                                     kinematics_yaml])
 
+    detection_node = Node(name=[LaunchConfiguration('example'), '_node'],
+                          package='crane_x7_examples',
+                          executable=LaunchConfiguration('example'),
+                          output='screen')
+
     return LaunchDescription([
         declare_use_sim_time,
         SetParameter(name='use_sim_time', value=LaunchConfiguration('use_sim_time')),
-        declare_example_name,
-        example_node
+        picking_node,
+        detection_node,
+        declare_example_name
     ])

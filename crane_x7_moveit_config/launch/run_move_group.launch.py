@@ -75,22 +75,40 @@ def generate_launch_description():
     joint_limits_yaml = load_yaml(
         "crane_x7_moveit_config", "config/joint_limits.yaml"
     )
+
+    pilz_cartesian_limits_yaml = load_yaml(
+            "moveit_resources_prbt_moveit_config", "config/pilz_cartesian_limits.yaml"
+    )
+
     robot_description_planning = {
-        "robot_description_planning": joint_limits_yaml}
+        "robot_description_planning": {**joint_limits_yaml, **pilz_cartesian_limits_yaml}}
 
     kinematics_yaml = load_yaml('crane_x7_moveit_config', 'config/kinematics.yaml')
 
     # Planning Functionality
-    ompl_planning_pipeline_config = {'move_group': {
-        'planning_plugin': 'ompl_interface/OMPLPlanner',
-        'request_adapters': 'default_planner_request_adapters/AddTimeOptimalParameterization \
+    planning_pipeline_config = { #'move_group': {
+        'default_planning_pipeline': 'pilz', 
+        "planning_pipelines": ["pilz", "ompl"],
+        'pilz': {
+            "planning_plugin": "pilz_industrial_motion_planner/CommandPlanner",
+            #"capabilities" : "pilz_industrial_motion_planner/MoveGroupSequenceAction pilz_industrial_motion_planner/MoveGroupSequenceService",
+            "request_adapters": "",
+            "start_state_max_bounds_erros": 0.1,
+        },
+        "ompl": {
+            'planning_plugin': 'ompl_interface/OMPLPlanner',
+            'request_adapters': 'default_planner_request_adapters/AddTimeOptimalParameterization \
                                default_planner_request_adapters/FixWorkspaceBounds \
                                default_planner_request_adapters/FixStartStateBounds \
                                default_planner_request_adapters/FixStartStateCollision \
                                default_planner_request_adapters/FixStartStatePathConstraints',
         'start_state_max_bounds_error': 0.1}}
+    #pilz_planning_yaml = load_yaml('crane_x7_moveit_config', "config/pilz_industrial_motion_planner_planning.yaml")
+    #planning_pipeline_config["pilz"].update(pilz_planning_yaml)
+
     ompl_planning_yaml = load_yaml('crane_x7_moveit_config', 'config/ompl_planning.yaml')
-    ompl_planning_pipeline_config['move_group'].update(ompl_planning_yaml)
+    planning_pipeline_config['ompl'].update(ompl_planning_yaml)
+
 
     # Trajectory Execution Functionality
     controllers_yaml = load_yaml('crane_x7_moveit_config', 'config/controllers.yaml')
@@ -117,7 +135,7 @@ def generate_launch_description():
                                            robot_description_semantic,
                                            robot_description_planning,
                                            kinematics_yaml,
-                                           ompl_planning_pipeline_config,
+                                           planning_pipeline_config,
                                            trajectory_execution,
                                            moveit_controllers,
                                            planning_scene_monitor_parameters])
@@ -131,7 +149,7 @@ def generate_launch_description():
                      arguments=['-d', rviz_config_file],
                      parameters=[robot_description,
                                  robot_description_semantic,
-                                 ompl_planning_pipeline_config,
+                                 planning_pipeline_config,
                                  kinematics_yaml])
 
     # Static TF
